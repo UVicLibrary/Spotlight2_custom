@@ -1,0 +1,23 @@
+<div class="mirador">
+  <!-- Set variables for mirador viewer -->
+  <% manifestUri = "http://ophelia.library.uvic.ca/spotlight/#{current_exhibit.slug}/catalog/#{document.id}/manifest.json" %>
+
+  <%= mirador_tag(
+      id: "viewer",
+      height: '100%',
+      width: '100%',
+      options: {
+        layout: "1x1",
+        data: [
+         {
+          manifestUri: "http://ophelia.library.uvic.ca/spotlight/#{current_exhibit.slug}/catalog/#{document.id}/manifest.json", location: "My Repository"
+         }
+        ],
+        windowObjects: [{
+           loadedManifest: manifestUri,
+           viewType: "ImageView"
+        }]
+      }
+    )
+   %>
+</div>

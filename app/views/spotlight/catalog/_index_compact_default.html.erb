@@ -1,0 +1,41 @@
+<%# header bar for doc items in index view -%>
+<% resource = Spotlight::Resource.find(document.id.split("-").last) %>
+<% file_type = resource.file_type if resource.file_type %>
+<td>
+  <% if file_type == "image" %>
+    <%= render_document_partial document, 'spotlight/catalog/admin_thumbnail', document_counter: document_counter %>
+  <% elsif file_type == "compound object" %>
+    <!-- Render the first image in compound_ids but link to the correct resource -->
+    <div class="document-thumbnail spotlight-admin-thumbnail">
+      <% first_resource = Spotlight::Resource.find(resource.compound_ids.first.split("-").last) %>
+      <%= link_to manifest_exhibit_solr_document_path(current_exhibit, document) do %>
+        <%= image_tag("/uploads/spotlight/featured_image/image/#{first_resource.upload_id.to_s}/#{first_resource.file_name}") %>
+      <% end %>
+    </div>
+  <% else %>
+  <!-- This is also the partial for audio files. N.B. the name of each partial must include _default at the end -->
+    <%= render_document_partial document, 'spotlight/catalog/admin_av_thumbnail', document_counter: document_counter %>
+  <% end %>
+</td>
+<td>
+  <%= render_document_partial document, 'admin_index_header', document_counter: document_counter %>
+
+  <div class="page-links">
+    <%= view_link document, url_for_document(document), class: 'btn btn-link' %>
+    <%# end %>
+    &middot; <%= exhibit_edit_link document, [:edit, current_exhibit, document], class: 'btn btn-link' %>
+  </div>
+
+</td>
+
+<td>
+  <%= file_type.capitalize if resource.file_type %>
+</td>
+
+<td>
+  <%= l Date.parse(document[blacklight_config.index.timestamp_field]) if document[blacklight_config.index.timestamp_field] %>
+</td>
+
+<td class="checkbox-toggle">
+  <%= render partial: 'document_visibility_control', locals: { document: document} %>
+</td>

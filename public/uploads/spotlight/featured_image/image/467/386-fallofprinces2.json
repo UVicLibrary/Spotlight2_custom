@@ -1,0 +1,66 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/manifest",
+  "@type": "sc:Manifest",
+  "label": "Test Upload",
+  "sequences": [
+    {
+      "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/manifest",
+      "@type": "sc:Sequence",
+      "canvases": [
+        {
+          "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-383/manifest/canvas/1-383",
+          "@type": "sc:Canvas",
+          "label": "Fall of Princes 2",
+          "width": 512,
+          "height": 512,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-383/manifest/canvas/1-383",
+                "@type": "dctypes:Image",
+                "height": 512,
+                "width": 512,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://ophelia.library.uvic.ca/images/467",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-383/manifest/canvas/1-383"
+            }
+          ]
+        },
+        {
+          "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-384/manifest/canvas/1-384",
+          "@type": "sc:Canvas",
+          "label": "Fall of Princes 3",
+          "width": 512,
+          "height": 512,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-384/manifest/canvas/1-384",
+                "@type": "dctypes:Image",
+                "height": 512,
+                "width": 512,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://ophelia.library.uvic.ca/images/468",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-384/manifest/canvas/1-384"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

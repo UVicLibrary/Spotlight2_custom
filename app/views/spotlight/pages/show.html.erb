@@ -1,0 +1,46 @@
+<% set_html_page_title @page.title if @page.should_display_title? %>
+<% render 'tophat' %>
+<%= render 'sidebar' if @page.display_sidebar? %>
+
+<%= cache_unless current_user, @page do %>
+<div class="<%= @page.display_sidebar? ? 'col-md-9' : 'col-md-12' %>">
+  <div class="clearfix">
+    <%= render 'edit_page_link' if can? :edit, @page %>
+    <% if @page.should_display_title? %>
+      <h1 class="page-title">
+        <%= @page.title %>
+      </h1>
+    <% end %>
+  </div>
+  <div>
+    <% if @page.content? %>
+      <%= render @page.content %>
+    <% else %>
+      <%= render 'empty' %>
+    <% end %>
+  </div>
+  <div>
+    <% page_ids = @exhibit.feature_pages.for_locale.published.ids %>
+    <% @exhibit.feature_pages.for_locale.published.each do |feature_section| %>
+      <% if current_page? [spotlight, @exhibit, feature_section] %>
+        <% current_pg_id = feature_section.id %>
+        <% current_index = page_ids.index(feature_section.id) %>
+          <% if current_pg_id != page_ids.first %>
+            <% prev_pg_index = current_index - 1 %>
+            <% prev_pg_title = @exhibit.pages.find(page_ids[prev_pg_index]).title %>
+            <span class = "go-to-prev">
+              <%= link_to "< " + prev_pg_title, exhibit_feature_page_path(@exhibit, prev_pg_title.downcase.gsub(" ", "-")) %>
+            </span>
+          <% end %>
+          <% if current_pg_id != page_ids.last %>
+            <% next_pg_index = current_index + 1 %>
+            <% next_pg_title = @exhibit.pages.find(page_ids[next_pg_index]).title %>
+            <span class = "go-to-next">
+              <%= link_to next_pg_title + " >", exhibit_feature_page_path(@exhibit, next_pg_title.downcase.gsub(" ", "-")) %>
+            </span>
+          <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+<% end %>

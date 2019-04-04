@@ -1,0 +1,44 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require mirador
+ *= require_self
+ *= require_tree .
+ */
+
+/* Next and previous page links */
+ .go-to-prev {
+   display: inline-block;
+   position: absolute;
+   left: 0;
+ }
+
+ .go-to-next {
+   display: inline-block;
+   position: absolute;
+   right: 0;
+ }
+
+ /* Prevents edit fields from floating right when displaying video, audio, or a model */
+ .blacklight-catalog-edit .edit_solr_document,
+ .blacklight-catalog-show .edit_solr_document {
+   float: left !important;
+ }
+
+.items-block .items-col .box {
+  min-height: 600px;
+}
+
+#results p {
+  margin-top: 2em;
+  text-align: center;
+}

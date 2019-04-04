@@ -1,0 +1,1 @@
+![](mirador_mockup.png)

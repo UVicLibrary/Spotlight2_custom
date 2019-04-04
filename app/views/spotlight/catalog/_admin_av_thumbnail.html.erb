@@ -1,0 +1,19 @@
+<% require 'rest_client' %>
+<% require 'json' %>
+<% resource = Spotlight::Resource.find(document.id.split("-").last) %>
+<div class="document-thumbnail spotlight-admin-thumbnail">
+  <%= link_to exhibit_solr_document_path(current_exhibit, document) do %>
+    <% if resource.file_type == "video" %>
+      <img src="<%= '/uploads/spotlight/featured_image/image/' + resource.upload_id.to_s + '/'+ 'thumb_' + resource.file_name.split(".").first + ".jpeg" %>" />
+    <% elsif resource.file_type == "model" && resource.uid.present? %>
+        <% model_info = RestClient.get("https://sketchfab.com/oembed?url=https://sketchfab.com/models/#{resource.uid.to_s}") rescue nil %>
+          <% unless model_info.nil? %>
+          <img src="<%= JSON.parse(model_info.body)["thumbnail_url"] %>"/>
+        <% else %>
+          <%= image_tag "processing.png" %>
+        <% end %>
+    <% else %>
+      <%= image_tag "audio.png" %>
+    <% end %>
+  <% end %>
+</div>

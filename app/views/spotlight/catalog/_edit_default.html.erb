@@ -1,0 +1,31 @@
+<%= bootstrap_form_for document, style: 'float: left !important;', url: spotlight.polymorphic_path([current_exhibit, document]), html: {:'data-form-observer' => true, multipart: true} do |f| %>
+<div class="edit-fields">
+
+  <%= f.fields_for :sidecar, document.sidecar(current_exhibit) do |c| %>
+    <%= c.check_box :public %>
+  <% end %>
+
+  <%= f.fields_for :uploaded_resource do |r| %>
+    <% if @resource.file_type == "model" %>
+    <!-- To Do: reupload model to Sketchfab, needs uid -->
+    <!-- TPatch model on Sketchfab, needs uid -->
+    <% else %>
+      <%= r.url_field :url, type: "file", help: t('.url-field.help', extensions: Spotlight::Engine.config.allowed_upload_extensions.join(' ')), label: "File" %>
+    <% end if document.uploaded_resource? %>
+  <% end %>
+
+  <%= render partial: 'edit_sidecar', locals: { document: document, f: f } %>
+
+  <% if can? :tag, current_exhibit %>
+  <div class="edit-tags">
+  <%= f.text_field :exhibit_tag_list, value: f.object.sidecar(current_exhibit).tags_from(current_exhibit).to_s, 'data-autocomplete_url' => exhibit_tags_path(current_exhibit, format: 'json') %>
+  </div>
+  <% end %>
+  <div class="form-actions">
+    <div class="primary-actions">
+      <%= cancel_link document, spotlight.polymorphic_path([current_exhibit, document]), class: 'btn btn-link' %>
+      <%= f.submit nil, class: 'btn btn-primary' %>
+      </div>
+  </div>
+</div>
+<% end %>

@@ -1,0 +1,2 @@
+(23,23,13320,'Spotlight::SolrDocumentSidecar',8,'Spotlight::Exhibit','tags','2018-06-11 23:07:46'),
+(176,29,13404,'Spotlight::SolrDocumentSidecar',8,'Spotlight::Exhibit','tags','2018-06-26 23:19:03'),

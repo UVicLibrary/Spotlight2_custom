@@ -1,0 +1,25 @@
+<%= javascript_include_tag "application" %>
+<%= stylesheet_link_tag "application" %>
+
+<body style="margin-bottom: 0 !important;">
+  <!-- Pass all the requisite variables -->
+  <%= render partial: "mirador", locals: {resource: @resource, document: @document} %>
+</body>
+
+<!-- Disable bottomPanel and thumbnails if manifest only has 1 image -->
+<% if @resource.file_type == "image" %>
+  <style>
+    .bottomPanel, .bottomPanel *, .mirador-osd-toggle-bottom-panel {
+      display: none !important;
+    }
+  </style>
+<% end %>
+
+<!-- Disable annotation creation for non-admins (Mirador annotations config doesn't seem to work in mirador_rails) -->
+<% unless can? :manage, @page %>
+  <style>
+    .mirador-osd-annotation-controls a:not(:first-child) *, .hud-dropdown *, .hud-dropdown, .button-container {
+      display: none !important;
+    }
+  </style>
+<% end %>

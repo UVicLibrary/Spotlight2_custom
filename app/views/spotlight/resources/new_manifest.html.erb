@@ -1,0 +1,64 @@
+<% console %>
+<%= render 'spotlight/shared/exhibit_sidebar' %>
+<div id="content" class="col-md-9">
+    <%= curation_page_title t('Add compound object') %>
+<div class="main-container">
+<p>Link multiple images to a single object (e.g. several pages in the same book). Images must already <%= link_to "be uploaded", new_exhibit_resource_path(current_exhibit) %>.</p>
+<div class="row">
+<%= bootstrap_form_for([current_exhibit, @resource.becomes(Spotlight::Resources::Upload)], layout: :horizontal, label_col: 'col-md-2', control_col: 'col-sm-6 col-md-6', html: { class: 'item-upload-form'} ) do |f| %>
+  <%= f.fields_for :data do |d| %>
+    <% Spotlight::Resources::Upload.fields(current_exhibit).each do |config| %>
+      <%= d.send(config.form_field_type, config.field_name, label: uploaded_field_label(config)) %>
+    <% end %>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :compound_ids, class: "control-label col-md-2" %>
+    <div class = "col-sm-6 col-md-6">
+      <input class="form-control" type="text" name="resources_upload[compound_ids][]" id="resources_upload_compound_ids" />
+    </div>
+    <p>&nbsp;</p>
+    <span class="help-block col-md-offset-2" style="float: left; left: 5%;">Enter IDs in the order you want them displayed, separated by commas and inside quotes (e.g. "1-305", "1-306").</span>
+  </div>
+  </div>
+
+  <div class="row">
+    <div class="form-actions">
+      <div class="primary-actions">
+        <%= cancel_link @resource, :back, class: 'btn btn-default' %>
+        <%= f.submit 'Add compound object', class: 'btn btn-primary' %>
+      </div>
+    </div>
+  </div>
+<% end %><!-- bootstrap_form_for -->
+
+<table>
+  <tbody class="metadata_fields dd dd-list" data-behavior="nestable" data-max-depth="1" data-list-node-name="tbody" data-item-node-name="tr" data-expand-btn-HTML=" " data-collapse-btn-HTML=" ">
+  <%= f.fields_for :index_fields do |idxf| %>
+    <% @blacklight_configuration.blacklight_config.index_fields.select { |k, v| blacklight_configuration_context.evaluate_if_unless_configuration(v.original) }.each do |key, config| %>
+      <%= render partial: 'metadata_field', locals: { key: key, config: config, f: idxf } %>
+    <% end %>
+  <% end %>
+  </tbody>
+</table>
+
+<div class="row">
+    <div class="form-group form-inline col-md-12" id="resources-lookup">
+      <label class="control-label col-sm-2">Look up an Item</label>
+        <%= form_tag(exhibit_resources_path, remote: true, method: :get, style: "display: inline-block;", class: "col-md-10") do %>
+        <%= text_field_tag(:q, "", class: 'form-control', style:'width: 40%', placeholder: "Title or description") %>
+        <%= button_tag(type: :submit, class: "btn btn-large btn-secondary") do %>
+          Search
+        <% end %>
+        <%= link_to 'See full catalog', admin_exhibit_catalog_path(current_exhibit), style: "padding-left: 1em;" %>
+      <% end %>
+    </div>
+</div>
+
+<div class="row">
+  <div id="results" class="col-md-10 offset-md-2">
+      <%= render 'results' %>
+  </div>
+</div>
+  </div>
+  </div>

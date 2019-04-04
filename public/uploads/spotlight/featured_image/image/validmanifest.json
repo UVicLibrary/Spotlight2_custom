@@ -1,0 +1,93 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "http://example.com/manifest",
+  "@type": "sc:Manifest",
+  "label": "My Manifest",
+  "sequences": [
+    {
+      "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-355/manifest",
+      "@type": "sc:Sequence",
+      "label": "Sequence Title",
+      "canvases": [
+        {
+          "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-354/manifest/canvas/1-354",
+          "@type": "sc:Canvas",
+          "label": "1",
+          "width": 3709,
+          "height": 5563,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-354/manifest/canvas/1-354",
+                "@type": "dctypes:Image",
+                "height": 5563,
+                "width": 3709,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://ophelia.library.uvic.ca/images/450",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-354/manifest/canvas/1-354"
+            }
+          ]
+        },
+        {
+          "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-353/manifest/canvas/1-353",
+          "@type": "sc:Canvas",
+          "label": "Croissants",
+          "width": 3794,
+          "height": 5312,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-353/manifest/canvas/1-353",
+                "@type": "dctypes:Image",
+                "height": 5312,
+                "width": 3794,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://ophelia.library.uvic.ca/images/449",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-353/manifest/canvas/1-353"
+            }
+          ]
+        },
+        {
+          "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-356/manifest/canvas/1-356",
+          "@type": "sc:Canvas",
+          "label": "3",
+          "width": 1058,
+          "height": 698,
+          "images": [
+            {
+              "@type": "oa:Annotation",
+              "motivation": "sc:painting",
+              "resource": {
+                "@id": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-356/manifest/canvas/1-356",
+                "@type": "dctypes:Image",
+                "height": 698,
+                "width": 1058,
+                "format": "image/jpeg",
+                "service": {
+                  "@context": "http://iiif.io/api/image/2/context.json",
+                  "@id": "http://ophelia.library.uvic.ca/images/452",
+                  "profile": "http://iiif.io/api/image/2/level2.json"
+                }
+              },
+              "on": "http://ophelia.library.uvic.ca/spotlight/test-exhibit/catalog/1-356/manifest/canvas/1-356"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

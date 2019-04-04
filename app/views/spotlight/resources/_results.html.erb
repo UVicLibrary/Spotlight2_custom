@@ -1,0 +1,56 @@
+<% if @results %>
+  <!-- Filter out results that aren't images -->
+  <% @results.reject! { |r| r['thumbnail_url_ssm'].nil? } %>
+  <% if @results.empty? %>
+    <p>No results found. (Only files that are images can be part of compound objects.)</p>
+  <% else %>
+    <table id="documents" class="table">
+      <thead>
+        <tr>
+          <th scope="col"></th><!-- For thumbnail -->
+          <th scope="col">ID</th>
+          <th scope="col">Title</th>
+          <th scope="col">Description</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @results.each do |result| %>
+          <tr>
+            <td>
+              <div class="document-thumbnail spotlight-admin-thumbnail">
+              <%= link_to exhibit_solr_document_path(current_exhibit.slug, result['id']) do %>
+                <%= image_tag(result['thumbnail_url_ssm'][0]) %>
+              <% end %>
+              </div>
+            </td>
+            <td class="doc-id">
+              <span ><%= result['id'] %></span>
+            </td>
+            <td>
+              <%= link_to exhibit_solr_document_path(current_exhibit.slug, result['id']) do %>
+              <!-- Title, or document ID if resource has no title -->
+              <% if result["full_title_tesim"].blank? %>
+                  <span class="doc-id"><%= result['id'] %></span>
+              <% else %>
+                <%= result["full_title_tesim"][0] %>
+              <% end %>
+              <% end %>
+            </td>
+            <td>
+              <!-- Description -->
+              <% if result["spotlight_upload_description_tesim"].blank? %>
+                No Description.
+              <% else %>
+                <%= result["spotlight_upload_description_tesim"][0] %>
+              <% end %>
+            </td>
+            <td>
+              <a class="add-doc-id" role="button"><button type="button" class="btn btn-success add">Add</button></a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% end %>
+  <% end %>

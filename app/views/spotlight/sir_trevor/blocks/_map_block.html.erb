@@ -1,0 +1,132 @@
+<!--
+https://developers.google.com/maps/documentation/javascript/
+https://github.com/googlemaps/js-marker-clusterer
+-->
+<!-- <script src="/assets/markerclusterer.js"></script> -->
+
+<style>
+   /* Set the size of the div element that contains the map */
+  #map {
+    height: 400px;  /* The height is 400 pixels */
+    width: 100%;  /* The width is the width of the web page */
+   }
+</style>
+
+<script>
+//app\sir_trevor_blocks\google_map_block.rb#getsolr
+var items = <%#= raw @items.to_json %> <%=raw map_block.getsolr.to_json %>;
+var exhibit_id = items[0].spotlight_exhibit_slugs_ssim[0];
+var loc = "exhibit_" + exhibit_id + "_location_ssim";
+var markers = [];
+// Checks if infoWindow is open or closed
+var openInfoWindow;
+
+
+// window.onload, function() {
+  function initMap() {
+    var map = new google.maps.Map(
+        document.getElementById('map'), {zoom: 4,
+          center: {lat:48.463150, lng:-123.312189}} // Center is mandatory but this is arbitrary since we will resize the map to fit all markers.
+    );
+    var bounds = new google.maps.LatLngBounds();
+    // Create markers
+    for (i = 0; i < items.length; i+=1) {
+      // e.g. "Tanzania; -3.064260, 37.355711" -> lat = -3.064260, long = 37.355711
+      lat = parseFloat((/-?\d{1,3}\.\d+/).exec(items[i][loc][0].split(";")[1].split(",")[0]));
+      lng = parseFloat((/-?\d{1,3}\.\d+/).exec(items[i][loc][0].split(";")[1].split(",")[1]));
+      title = items[i].full_title_tesim[0]
+      position = new google.maps.LatLng(lat, lng);
+
+      content =
+        '<h4>'+ title +'</h4>'+
+        '<div style=" display: table;">'+
+          '<div style="display: table-row">'+
+            '<div style="display: table-cell;"><img src="'+ items[i].thumbnail_url_ssm +'" alt ="/uploads/spotlight/resources/videoupload/url/stockaudio.jpg" height="60" width = "60"/></div>'+
+            '<div style="display: table-cell; vertical-align: top; padding-left: 10px;">'+ (items[i]["spotlight_upload_description_tesim"] == null? "" : items[i]["spotlight_upload_description_tesim"]) +'</div>'+
+          '</div>'+
+          '<div style="display: table-row">'+
+            '<div style="display: table-cell; padding-top:5px;""><a href = '+'/spotlight/' + exhibit_id + '/catalog/' + items[i].id+'>View</a></div>'+
+            '<div style="display: table-cell; text-align: right">'+ (items[i][location] == null? "": items[i][location]) +'</div>'+
+          '</div>'+
+        '</div>';
+
+      marker = new google.maps.Marker({
+        map: null,//map,
+        position: {lat: lat, lng: lng},
+        title: title,
+        groupSize: 1,
+        text: content
+      });
+
+      // Check if there is overlap
+      var overlap = false;
+      for(j = 0; j < markers.length; j+=1){
+        //add marker info to currenty exsting marker
+        if(position.equals(markers[j].getPosition())){
+          overlap = true;
+          markers[j].text = markers[j].text + '<hr style="border-top: 1px solid #cccccc;" />' + content;
+          markers[j].groupSize = markers[j].groupSize + 1;
+          if (markers[j].groupSize > 1){ markers[j].setLabel(String(markers[j].groupSize));}
+          break;
+        }
+      } //end for j
+
+      //add marker to map if it does not overlap
+      if(!overlap){
+        marker.setMap(map);
+        bounds.extend(position); //map will zoom and move so that all markers are on the screen
+        map.fitBounds(bounds);
+        var infowindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(marker,'mouseover', (function(marker,content,infowindow){
+          return function() {
+        // If an info window is already open, close it before opening a new one
+         if (openInfoWindow)
+           openInfoWindow.close();
+            infowindow.setContent(marker.text); // include additions from overlapping markers
+            openInfoWindow = infowindow;
+            infowindow.open(map,marker);
+            // otherMarkers = markers.filter(m => m != marker) // reduce opacity for other markers
+            // for(k = 0; k < otherMarkers.length; k+=1) {
+            //   k.setOpacity(0.5)
+            // }
+            map.addListener('click',(function(marker){
+              return function(){
+                infowindow.close();
+              };
+            })(marker));
+          };
+        })(marker,content,infowindow));
+        markers.push(marker);
+      } //end for !overlap
+
+    } // end for
+
+    var options = {
+      imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m', //Rails.root.join('app', 'assets', 'images', 'm')
+      maxZoom: 20,
+      gridSize: 20
+    };
+
+    var markerCluster = new MarkerClusterer(map, markers, options);
+    // marker.setMap(map);
+    // bounds.extend(position); //map will zoom and move so that all markers are on the screen
+    // map.fitBounds(bounds);
+
+  } // initMap()
+
+//}
+</script>
+<!-- <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script> -->
+
+<!--Load the API from the specified URL
+* The async attribute allows the browser to render the page while the API loads
+* The key parameter will contain your own API key (which is not needed for this tutorial)
+* The callback parameter executes the initMap() function
+-->
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-dUsPm2sOQ_BhDkB58btFuthmGMB1Hnc&callback=initMap">
+</script>
+
+<div id="map">
+</div>
