@@ -1,6 +1,4 @@
 <% if @results %>
-  <!-- Filter out results that aren't images -->
-  <% @results.reject! { |r| r['thumbnail_url_ssm'].nil? } %>
   <% if @results.empty? %>
     <p>No results found. (Only files that are images can be part of compound objects.)</p>
   <% else %>
@@ -8,7 +6,7 @@
       <thead>
         <tr>
           <th scope="col"></th><!-- For thumbnail -->
-          <th scope="col">ID</th>
+          <th scope="col">Item ID</th>
           <th scope="col">Title</th>
           <th scope="col">Description</th>
           <th scope="col"></th>
@@ -27,13 +25,13 @@
             <td class="doc-id">
               <span ><%= result['id'] %></span>
             </td>
-            <td>
+            <td class="title">
               <%= link_to exhibit_solr_document_path(current_exhibit.slug, result['id']) do %>
               <!-- Title, or document ID if resource has no title -->
               <% if result["full_title_tesim"].blank? %>
-                  <span class="doc-id"><%= result['id'] %></span>
+                  <span>Untitled</span>
               <% else %>
-                <%= result["full_title_tesim"][0] %>
+                <span><%= result["full_title_tesim"][0] %></span>
               <% end %>
               <% end %>
             </td>

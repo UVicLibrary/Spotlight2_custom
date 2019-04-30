@@ -51,10 +51,10 @@ module Spotlight
       # Search for documents on new_manifest page
       if params[:q]
         response = get_solr
-        # results = Spotlight::Resource.where('data LIKE ? OR file_name LIKE ?', "%#{params[:q]}%", "%#{params[:q]}%").to_a
-        # @results = results.select { |result| result.file_type == "image"}
         @num_results = response['response']['numFound']
         @results = response['response']['docs']
+        # Filter out results that aren't images
+        @results.reject! { |r| r['thumbnail_url_ssm'].nil? }
         respond_to do |format|
           format.js {
             render partial: 'results'

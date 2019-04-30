@@ -25,7 +25,9 @@ gem 'iiif-presentation', '~> 0.2.0'
 gem 'mime-types'
 gem 'httparty'
 gem 'annotot'
-gem 'rubyzip'
+# gem 'rubyzip'
+gem 'sortable-rails'
+gem 'nouislider-rails'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'

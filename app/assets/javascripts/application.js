@@ -21,24 +21,10 @@
 //= require mirador
 //= require annotot/annotot_endpoint
 //= require markerclusterer
+//= require sortable-rails-jquery
+//= require nouislider
+//= require wNumb
+//= require custom
 
 //= require blacklight/checkbox_submit
 //= require_tree .
-
-
-// Turbolinks prevents document ready so use this instead
-$( document ).on('turbolinks:load', function() {
-    var first = true;
-    // Populate form with doc-ids
-    $('#results').on('click', '.add-doc-id', function(){
-      var doc = $(this).parents('tr').find('.doc-id > span').text();
-      if (first == true) {
-        $('#resources_upload_compound_ids').val($('#resources_upload_compound_ids').val() + "\"" + doc + "\"");
-        first = false;
-      }
-      else {
-        // Add comma
-        $('#resources_upload_compound_ids').val($('#resources_upload_compound_ids').val() + ", \"" + doc + "\"");
-      }
-    });
-});

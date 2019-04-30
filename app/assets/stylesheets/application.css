@@ -11,9 +11,55 @@
  * It is generally better to create a new file per style scope.
  *
  *= require mirador
+ *= require nouislider
  *= require_self
  *= require_tree .
  */
+
+.noUi-tooltip {
+  display: block;
+  position: absolute;
+  border: 1px solid #D9D9D9;
+  border-radius: 3px;
+  background: #fff;
+  color: #000;
+  padding: 5px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+  left: 50%;
+  bottom: 120%;
+}
+
+.ghost {
+  opacity: .5;
+background: #C8EBFB;
+}
+
+.remove-button, .remove-id {
+  position: absolute !important;
+  top: 0.5em !important;
+  right: 0.5em !important;
+}
+
+.doc-span {
+  padding-right: 2em;
+}
+
+#slider {
+  margin-top: 3em !important;
+  margin-bottom: 3em !important;
+}
+
+#search-option {
+  margin-top: 3em;
+}
+
+.panel-group > ol {
+  list-style-type: none;
+}
+
+
 
 /* Next and previous page links */
  .go-to-prev {

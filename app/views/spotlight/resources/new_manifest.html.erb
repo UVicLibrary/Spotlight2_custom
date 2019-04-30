@@ -1,64 +1,240 @@
 <% console %>
-<%= render 'spotlight/shared/exhibit_sidebar' %>
+<%= render "spotlight/shared/exhibit_sidebar" %>
 <div id="content" class="col-md-9">
-    <%= curation_page_title t('Add compound object') %>
+    <%= curation_page_title t("Add compound object") %>
 <div class="main-container">
-<p>Link multiple images to a single object (e.g. several pages in the same book). Images must already <%= link_to "be uploaded", new_exhibit_resource_path(current_exhibit) %>.</p>
+<p>Combine multiple items into one object (e.g. several pages in the same book). Items must be <%= link_to "uploaded", new_exhibit_resource_path(current_exhibit) %> images.</p>
 <div class="row">
-<%= bootstrap_form_for([current_exhibit, @resource.becomes(Spotlight::Resources::Upload)], layout: :horizontal, label_col: 'col-md-2', control_col: 'col-sm-6 col-md-6', html: { class: 'item-upload-form'} ) do |f| %>
-  <%= f.fields_for :data do |d| %>
+<%= bootstrap_form_for([current_exhibit, @resource.becomes(Spotlight::Resources::Upload)], layout: :horizontal, label_col: 'col-md-2', control_col: 'col-sm-6 col-md-6', html: { class: 'item-upload-form'} ) do |resource| %>
+  <%= resource.fields_for :data do |d| %>
     <% Spotlight::Resources::Upload.fields(current_exhibit).each do |config| %>
       <%= d.send(config.form_field_type, config.field_name, label: uploaded_field_label(config)) %>
     <% end %>
   <% end %>
 
+
   <div class="form-group">
-    <%= f.label :compound_ids, class: "control-label col-md-2" %>
+    <%#= label_tag(:compound_ids, "Item IDs", class: "control-label col-md-2") %>
     <div class = "col-sm-6 col-md-6">
-      <input class="form-control" type="text" name="resources_upload[compound_ids][]" id="resources_upload_compound_ids" />
+      <input class="form-control" type="hidden" name="resources_upload[compound_ids][]" id="resources_upload_compound_ids" />
     </div>
     <p>&nbsp;</p>
-    <span class="help-block col-md-offset-2" style="float: left; left: 5%;">Enter IDs in the order you want them displayed, separated by commas and inside quotes (e.g. "1-305", "1-306").</span>
-  </div>
+    <span class="help-block col-md-offset-2" style="float: left; left: 5%;"></span>
+    <!-- <span class="help-block col-md-offset-2" style="float: left; left: 5%;">IDs in the order you want them displayed, separated by commas and inside quotation marks (e.g. "1-305", "1-306").</span>
+  </div>-->
   </div>
 
-  <div class="row">
-    <div class="form-actions">
-      <div class="primary-actions">
-        <%= cancel_link @resource, :back, class: 'btn btn-default' %>
-        <%= f.submit 'Add compound object', class: 'btn btn-primary' %>
-      </div>
-    </div>
-  </div>
-<% end %><!-- bootstrap_form_for -->
+ </div>
 
-<table>
-  <tbody class="metadata_fields dd dd-list" data-behavior="nestable" data-max-depth="1" data-list-node-name="tbody" data-item-node-name="tr" data-expand-btn-HTML=" " data-collapse-btn-HTML=" ">
-  <%= f.fields_for :index_fields do |idxf| %>
-    <% @blacklight_configuration.blacklight_config.index_fields.select { |k, v| blacklight_configuration_context.evaluate_if_unless_configuration(v.original) }.each do |key, config| %>
-      <%= render partial: 'metadata_field', locals: { key: key, config: config, f: idxf } %>
-    <% end %>
-  <% end %>
-  </tbody>
-</table>
 
+
+<!-- Range slider, see https://refreshless.com/nouislider/ -->
 <div class="row">
-    <div class="form-group form-inline col-md-12" id="resources-lookup">
-      <label class="control-label col-sm-2">Look up an Item</label>
-        <%= form_tag(exhibit_resources_path, remote: true, method: :get, style: "display: inline-block;", class: "col-md-10") do %>
-        <%= text_field_tag(:q, "", class: 'form-control', style:'width: 40%', placeholder: "Title or description") %>
-        <%= button_tag(type: :submit, class: "btn btn-large btn-secondary") do %>
-          Search
-        <% end %>
-        <%= link_to 'See full catalog', admin_exhibit_catalog_path(current_exhibit), style: "padding-left: 1em;" %>
-      <% end %>
+
+  <div class="form-check col-md-12" id="range-option">
+    <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection1" value="option1">
+    <label class="form-check-label control-label col-md-3" for="toggleSelection1">Select a range of item IDs</label>
+  </div>
+
+  <div class="col-sm-6 col-md-6 col-lg-6 col-lg-offset-2 col-md-offset-2" id="slider"></div>
+
+  <!-- <div class="row"> -->
+  <div class="form-actions">
+    <div class="primary-actions">
+      <%= cancel_link @resource, :back, class: 'btn btn-default' %>
+      <%= resource.submit 'Add compound object', class: 'btn btn-primary' %>
     </div>
+  </div>
+  <% end %><!-- bootstrap_form_for -->
+  <!-- </div> -->
+
+<!-- Search for an item -->
+<div class="form-check col-md-12" id="search-option">
+  <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection2" value="option2" checked >
+  <label class="form-check-label control-label col-sm-3 col-md-3 col-lg-3" for="toggleSelection2">Or Look up an Item</label>
+</div>
+<div class="form-group form-inline col-md-12" id="resources-lookup">
+    <%= form_tag(exhibit_resources_path, remote: true, method: :get, style: "display: inline-block;", class: "col-md-9 col-lg-9") do %>
+    <%= text_field_tag(:q, "", class: 'form-control', style:'width: 40%', placeholder: "Title or description", disabled: false, id: "search-field") %>
+    <%= button_tag(type: :submit, class: "btn btn-large btn-secondary", disabled: false) do %>
+      Search
+    <% end %>
+    <%= link_to 'See all items', admin_exhibit_catalog_path(current_exhibit), style: "padding-left: 1em;" %>
+  <% end %>
+</div><!-- /#resources-lookup -->
+
+
+<!-- Panels added from search-->
+<div class="row">
+  <div class="panel-group dd col-sm-6 col-md-6 col-lg-6">
+    <ol id="items">
+    </ol>
+  </div>
 </div>
 
-<div class="row">
+</div><!-- /.row -->
+
+<!-- <div class="row"> -->
   <div id="results" class="col-md-10 offset-md-2">
       <%= render 'results' %>
   </div>
-</div>
+<!-- </div> -->
   </div>
   </div>
+
+<script>
+
+  // Slider for selecting a range of item IDs
+  // https://www.rubydoc.info/gems/nouislider-rails/8.2.1#Usage
+  var slider = document.getElementById('slider');
+
+  // Find the max and min Item ID of all items in this exhibit
+  var max_doc_id = <%= current_exhibit.solr_document_sidecars.pluck(:resource_id).max %>;
+  var min_doc_id = <%= current_exhibit.solr_document_sidecars.pluck(:resource_id).min %>;
+  var prefix = '<%= current_exhibit.id %>-'
+
+  // Start slider disabled by default
+  noUiSlider.create(slider, {
+      start: [min_doc_id + ((max_doc_id - min_doc_id)/3),
+      max_doc_id - ((max_doc_id - min_doc_id)/3)],
+      step: 1,
+      connect: true,
+      orientation: 'horizontal',
+      range: {
+          'min': min_doc_id,
+          'max': max_doc_id
+      },
+      tooltips: true,
+      format: wNumb({
+        decimals: 0,
+        prefix: prefix
+      }), // https://refreshless.com/wnumb/
+      pips: {
+        mode: 'positions',
+        values: [0, 25, 50, 75, 100],
+        density: 4
+      }
+  });
+
+  // Takes an array of integers and adds them to the Items ID form with quotes
+  function updateRangeIds() {
+    // get values from handles
+    var newValues = slider.noUiSlider.get();
+    // find or update the range
+    var minValue = newValues[0].split("-")[1];
+    var maxValue = newValues[1].split("-")[1];
+    var range = parseInt(maxValue - minValue);
+    var ids = [];
+    var i;
+
+    for (i = 0; i <= range; i++) { // returns a list of item IDs within that range
+      id = parseInt(minValue) + i;
+      ids.push(prefix + id);
+    }
+
+    // Find all images in the exhibit between a certain range
+    <% image_ids_array = [] %>
+    <% images = current_exhibit.resources.select{|r| r.file_type =="image"} %>
+    <% images.each do |img| %>
+      <% image_ids_array.push(img.solr_document_sidecars.first.document_id) %>
+    <% end %>
+    var exhibitImages = <%= raw image_ids_array.compact %>; // Filters out nil values and non-images
+    var validIds = ids.filter(function(val){ // Only include IDs that have corresponding documents
+      return exhibitImages.indexOf(val) != -1;
+    });
+
+    var quotedIds = '"' + validIds.join('","') + '"';
+    $('#resources_upload_compound_ids').val(quotedIds); // Fill in the Items ID form
+  }
+
+  // Start slider disabled by default
+  slider.setAttribute('disabled', true);
+
+  // See slider in the bottom script of views/resources/new_manifest.html.erb
+    var idsInOrder = [];
+
+    // Update the order of compound ids with quotation marks and separated by commas ("1-385","1-386")
+    function updateIdsOrder() {
+      idsInOrder = [];
+      // console.log("Sorted!");
+      $('.panel-heading').each(function(){
+        idsInOrder.push($(this).attr('id'));
+      });
+      var quotedIds = '"' + idsInOrder.join('","') + '"';
+      $('#resources_upload_compound_ids').val(quotedIds);
+    }
+
+    var sortable = new Sortable(items, {
+        ghostClass: 'ghost',
+        sort: true,
+        onSort: function() {
+          updateIdsOrder();
+        }
+        // disabled: false
+    });
+
+    function addPanel() {
+      // Grab the appropriate title from the link clicked
+      var title = $(this).parents('tr').find('.title').text();//.text();
+      // Add compound ID to text box
+      var doc = $(this).parents('tr').find('.doc-id > span').text();
+      var docSpan = '<span class="doc-span">' + doc + '</span>';
+
+      panelContent =
+      '<li>' +
+      '<div class="dd3-content panel panel-default page-admin">' +
+          '<div class="dd-handle dd3-handle"></div>' +
+          '<div class="panel-heading" id="' + doc + '">' + docSpan + title +
+            '<a class="btn btn-link remove-id">' + '<span class="glyphicon glyphicon-remove remove-button" aria-hidden="true"></span>' +
+            '</a>' +
+          '</div>' +
+          '</div>' +
+      '</div>' +
+      '</li>'
+      $('.panel-group > ol').append(panelContent);
+      updateIdsOrder();
+    }
+
+    function removePanel() {
+      $(this).parents('.dd3-content.panel').remove();
+      updateIdsOrder();
+    }
+
+    $('#results').on('click', '.add-doc-id', addPanel);
+    $(document).on('click', '.remove-id', removePanel);
+
+  // Toggle search or range selection based on radio buttons
+  $(document).on('click', '.form-check-label', function() {
+
+    var selected = $(this).parents('.form-check').attr('id');
+    if(selected == "range-option") {
+      slider.removeAttribute('disabled');
+      $('#search-field').prop('disabled', true); // Disable search
+      $('#search-button').prop('disabled', true);
+      sortable.option('sort', false);  // Disable panel sorting
+      $('#results').off('click'); // Disable adding panels
+      $(document).off('click', '.remove-id'); // Disable removing panels
+      $('.panel-heading').css('opacity','0.6'); // Fade disabled panels
+      // Fill in form with initial values and update any time the handles move
+      updateRangeIds();
+      slider.noUiSlider.on('change', updateRangeIds);
+    }
+    else { // search option selected
+      // Disable range options, enable search
+      slider.setAttribute('disabled', true);
+      $('#search-field').prop('disabled', false);
+      $('#search-button').prop('disabled', false);
+      sortable.option('sort', true);
+      $('#results').on('click', '.add-doc-id', addPanel); // Enable adding panels
+      $(document).on('click', '.remove-id', removePanel); // Enable removing panels
+      $('.panel-heading').css('opacity','1');// Unfade panels
+      updateIdsOrder();
+    }
+
+  });
+
+
+
+
+
+</script>
