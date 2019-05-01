@@ -3,6 +3,7 @@
 <div id="content" class="col-md-9">
     <%= curation_page_title t("Add compound object") %>
 <div class="main-container">
+
 <p>Combine multiple items into one object (e.g. several pages in the same book). Items must be <%= link_to "uploaded", new_exhibit_resource_path(current_exhibit) %> images.</p>
 <div class="row">
 <%= bootstrap_form_for([current_exhibit, @resource.becomes(Spotlight::Resources::Upload)], layout: :horizontal, label_col: 'col-md-2', control_col: 'col-sm-6 col-md-6', html: { class: 'item-upload-form'} ) do |resource| %>
@@ -12,10 +13,10 @@
     <% end %>
   <% end %>
 
-  <div class="form-group">
-    <%= label_tag(:compound_ids, "Item IDs", class: "control-label col-md-2") %>
-    <div class = "col-sm-6 col-md-6 compound-ids"> <!-- type="hidden" -->
-      <input class="form-control"  name="resources_upload[compound_ids][]" id="resources_upload_compound_ids"/>
+  <div class="form-group item-ids-field">
+    <%#= label_tag(:compound_ids, "Item IDs", class: "control-label col-md-2") %>
+    <div class = "col-sm-6 col-md-6 item-ids-input"> <!-- type="hidden" -->
+      <input class="form-control" name="resources_upload[compound_ids][]" id="resources_upload_compound_ids"/>
     </div>
     <!-- <p>&nbsp;</p>
     <span class="help-block col-md-offset-2" style="float: left; left: 5%;"></span> -->
@@ -36,7 +37,6 @@
 
   <div class="col-sm-6 col-md-6 col-lg-6 col-lg-offset-2 col-md-offset-2" id="slider"></div>
 
-  <!-- <div class="row"> -->
   <div class="form-actions">
     <div class="primary-actions">
       <%= cancel_link @resource, :back, class: 'btn btn-default' %>
@@ -44,7 +44,6 @@
     </div>
   </div>
   <% end %><!-- bootstrap_form_for -->
-  </div>
 
 <!-- Search for an item -->
 <div class="form-check col-md-12" id="search-option">
@@ -52,6 +51,9 @@
     <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection2" value="option2" checked >
   Or Look up an Item</label>
 </div>
+
+</div><!-- row -->
+
 <div class="form-group form-inline col-md-12" id="resources-lookup">
     <%= form_tag(exhibit_resources_path, remote: true, method: :get, class: "col-md-9 col-lg-9") do %>
     <%= text_field_tag(:q, "", class: 'form-control', style:'width: 40%', placeholder: "Title or description", disabled: false, id: "search-field") %>
@@ -83,16 +85,22 @@
 
 <script>
 
+  // Validate item IDs present
   $( document ).on('turbolinks:load', function() {
-
     $('.submit-compound-object').click(function(e) {
-      // If the IDs field is empty, show error message
+      errorMessage = '<span class="invalid-feedback">You did not define Item IDs for your compound object.</span>'
+      // If the IDs field is empty or blank, show error message
       if (!$('#resources_upload_compound_ids').val() || $('#resources_upload_compound_ids').val() == '""') {
         e.preventDefault();
-        alert("Cannot be blank");
+        if ($('.item-ids-field span').length) {
+          // Do nothing
+        }
+        else {
+          $('.item-ids-field').append(errorMessage);
+        }
+        //alert("You must choose Item IDs for your compound object.");
       }
     });
-
   });
 
   // Slider for selecting a range of item IDs
@@ -236,7 +244,7 @@
       $('#search-field').prop('disabled', false);
       $('#search-button').prop('disabled', false);
       sortable.option('sort', true);
-      $('#results').on('click', '.add-doc-id', addPanel); // Enable adding panels
+      $('#results').off('click').on('click', '.add-doc-id', addPanel); // Enable adding panels
       $(document).on('click', '.remove-id', removePanel); // Enable removing panels
       $('.panel-heading').css('opacity','1');// Unfade panels
       updateIdsOrder();
