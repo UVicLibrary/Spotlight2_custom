@@ -63,7 +63,6 @@ module Spotlight
       end
     end
 
-
     def monitor
       render json: current_exhibit.reindex_progress
     end

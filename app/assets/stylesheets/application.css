@@ -16,6 +16,29 @@
  *= require_tree .
  */
 
+/* New manifest form */
+
+#resources-lookup form {
+  display: inline-block;
+  padding-left: 2em;
+}
+
+#range-option .control-label, #search-option .control-label {
+  text-align: left;
+  margin-bottom: 1.5%;
+}
+
+#range-option .control-label input, #search-option .control-label input {
+  text-align: left;
+  margin-right: 5%;
+}
+
+/* noUiSlider */
+
+.noUi-connect {
+  background: #5bc0de; /* #269abc; */
+}
+
 .noUi-tooltip {
   display: block;
   position: absolute;
@@ -66,12 +89,14 @@ background: #C8EBFB;
    display: inline-block;
    position: absolute;
    left: 0;
+   margin-bottom: 10%;
  }
 
  .go-to-next {
    display: inline-block;
    position: absolute;
    right: 0;
+   margin-bottom: 10%;
  }
 
  /* Prevents edit fields from floating right when displaying video, audio, or a model */

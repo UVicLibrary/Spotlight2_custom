@@ -1,4 +1,4 @@
-<% console %>
+<%# console %>
 <%= render "spotlight/shared/exhibit_sidebar" %>
 <div id="content" class="col-md-9">
     <%= curation_page_title t("Add compound object") %>
@@ -12,28 +12,26 @@
     <% end %>
   <% end %>
 
-
   <div class="form-group">
-    <%#= label_tag(:compound_ids, "Item IDs", class: "control-label col-md-2") %>
-    <div class = "col-sm-6 col-md-6">
-      <input class="form-control" type="hidden" name="resources_upload[compound_ids][]" id="resources_upload_compound_ids" />
+    <%= label_tag(:compound_ids, "Item IDs", class: "control-label col-md-2") %>
+    <div class = "col-sm-6 col-md-6 compound-ids"> <!-- type="hidden" -->
+      <input class="form-control"  name="resources_upload[compound_ids][]" id="resources_upload_compound_ids"/>
     </div>
-    <p>&nbsp;</p>
-    <span class="help-block col-md-offset-2" style="float: left; left: 5%;"></span>
+    <!-- <p>&nbsp;</p>
+    <span class="help-block col-md-offset-2" style="float: left; left: 5%;"></span> -->
+
     <!-- <span class="help-block col-md-offset-2" style="float: left; left: 5%;">IDs in the order you want them displayed, separated by commas and inside quotation marks (e.g. "1-305", "1-306").</span>
   </div>-->
   </div>
-
- </div>
-
 
 
 <!-- Range slider, see https://refreshless.com/nouislider/ -->
 <div class="row">
 
   <div class="form-check col-md-12" id="range-option">
+    <label class="form-check-label control-label col-md-4" for="toggleSelection1">
     <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection1" value="option1">
-    <label class="form-check-label control-label col-md-3" for="toggleSelection1">Select a range of item IDs</label>
+    Select a range of item IDs</label>
   </div>
 
   <div class="col-sm-6 col-md-6 col-lg-6 col-lg-offset-2 col-md-offset-2" id="slider"></div>
@@ -42,19 +40,20 @@
   <div class="form-actions">
     <div class="primary-actions">
       <%= cancel_link @resource, :back, class: 'btn btn-default' %>
-      <%= resource.submit 'Add compound object', class: 'btn btn-primary' %>
+      <%= resource.submit 'Add compound object', class: 'btn btn-primary submit-compound-object' %>
     </div>
   </div>
   <% end %><!-- bootstrap_form_for -->
-  <!-- </div> -->
+  </div>
 
 <!-- Search for an item -->
 <div class="form-check col-md-12" id="search-option">
-  <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection2" value="option2" checked >
-  <label class="form-check-label control-label col-sm-3 col-md-3 col-lg-3" for="toggleSelection2">Or Look up an Item</label>
+  <label class="form-check-label control-label col-sm-3 col-md-3 col-lg-3" for="toggleSelection2">
+    <input class="form-check-input pull-left" type="radio" name="toggleSelection" id="toggleSelection2" value="option2" checked >
+  Or Look up an Item</label>
 </div>
 <div class="form-group form-inline col-md-12" id="resources-lookup">
-    <%= form_tag(exhibit_resources_path, remote: true, method: :get, style: "display: inline-block;", class: "col-md-9 col-lg-9") do %>
+    <%= form_tag(exhibit_resources_path, remote: true, method: :get, class: "col-md-9 col-lg-9") do %>
     <%= text_field_tag(:q, "", class: 'form-control', style:'width: 40%', placeholder: "Title or description", disabled: false, id: "search-field") %>
     <%= button_tag(type: :submit, class: "btn btn-large btn-secondary", disabled: false) do %>
       Search
@@ -83,6 +82,18 @@
   </div>
 
 <script>
+
+  $( document ).on('turbolinks:load', function() {
+
+    $('.submit-compound-object').click(function(e) {
+      // If the IDs field is empty, show error message
+      if (!$('#resources_upload_compound_ids').val() || $('#resources_upload_compound_ids').val() == '""') {
+        e.preventDefault();
+        alert("Cannot be blank");
+      }
+    });
+
+  });
 
   // Slider for selecting a range of item IDs
   // https://www.rubydoc.info/gems/nouislider-rails/8.2.1#Usage
@@ -209,8 +220,8 @@
     var selected = $(this).parents('.form-check').attr('id');
     if(selected == "range-option") {
       slider.removeAttribute('disabled');
-      $('#search-field').prop('disabled', true); // Disable search
-      $('#search-button').prop('disabled', true);
+       $('#search-field').prop('disabled', true); // Disable search
+       $('#search-button').prop('disabled', true);
       sortable.option('sort', false);  // Disable panel sorting
       $('#results').off('click'); // Disable adding panels
       $(document).off('click', '.remove-id'); // Disable removing panels
@@ -232,9 +243,5 @@
     }
 
   });
-
-
-
-
 
 </script>

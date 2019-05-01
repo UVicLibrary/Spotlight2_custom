@@ -26,5 +26,4 @@
 //= require wNumb
 //= require custom
 
-//= require blacklight/checkbox_submit
 //= require_tree .
