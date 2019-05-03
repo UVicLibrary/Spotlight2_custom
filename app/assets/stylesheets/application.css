@@ -16,9 +16,9 @@
  *= require_tree .
  */
 
-/* .item-ids-input {
+.item-ids-input {
   display: none;
-} */
+}
 
 .invalid-feedback {
   width: 100%;
