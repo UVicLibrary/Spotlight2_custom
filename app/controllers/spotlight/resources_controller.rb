@@ -2,6 +2,9 @@ module Spotlight
   ##
   # CRUD actions for exhibit resources
   class ResourcesController < Spotlight::ApplicationController
+
+    require 'byebug'
+
     before_action :authenticate_user!, except: [:show]
 
     load_and_authorize_resource :exhibit, class: Spotlight::Exhibit
@@ -34,6 +37,22 @@ module Spotlight
 
     end
 
+    def destroy
+      @resource = Spotlight::Resource.find(params[:id])
+      @exhibit = @resource.exhibit
+      delete_document
+      @resource.destroy
+      flash[:notice] = "Item was successfully deleted"
+      redirect_to admin_exhibit_catalog_path(@exhibit)
+    end
+
+    def delete_document
+      solr = RSolr.connect :url => 'http://localhost:8983/solr/blacklight-core'
+      doc_id = @resource.compound_id
+      solr.delete_by_id doc_id
+      solr.commit
+    end
+
     def get_solr
       items = []
       solr = RSolr.connect :url => 'http://localhost:8983/solr/blacklight-core'
@@ -54,7 +73,15 @@ module Spotlight
         @num_results = response['response']['numFound']
         @results = response['response']['docs']
         # Filter out results that aren't images
-        @results.reject! { |r| r['thumbnail_url_ssm'].nil? }
+        # @results.reject! { |r| r['thumbnail_url_ssm'].nil? }
+        @results.each do |r|
+          resource_id = r["id"].split("-")[1]
+          resource = Spotlight::Resource.find(resource_id)
+          if resource.file_type != "image"
+            @results.delete(r)
+          end
+        end
+
         respond_to do |format|
           format.js {
             render partial: 'results'

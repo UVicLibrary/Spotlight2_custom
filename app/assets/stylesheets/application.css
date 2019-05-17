@@ -16,6 +16,11 @@
  *= require_tree .
  */
 
+ td.delete-button-cell {
+   text-align: center;
+ }
+
+
 .item-ids-input {
   display: none;
 }
