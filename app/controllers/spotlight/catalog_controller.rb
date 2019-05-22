@@ -150,6 +150,8 @@ module Spotlight
         results = dimensions_to_i(canvas, resource)
         canvas = results[0]
         resource = results[1]
+        # source_m.metadata = [{'label'=>'Author', 'value'=>'Anne Author'}, {'label' => 'Date', 'value' => '1924'}]
+        source_m.metadata = add_metadata
         manifest = source_m.to_json(pretty:true)
       else # If compound object, render the saved file
         doc_ids = @resource.compound_ids
@@ -198,6 +200,24 @@ module Spotlight
       resource.height = resource.height.to_i
       resource["@id"] = canvas["@id"]
       return [canvas, resource]
+    end
+
+    def add_metadata
+      exhibit_slug = current_exhibit.slug
+      # Get rid of labels that aren't metadata fields
+      fields = []
+      uploaded_resource_params[0][:configured_fields].each { |f| fields.push(f.to_s) }
+      metadata = []
+      all_upload_fields = Spotlight::Resources::Upload.fields(current_exhibit)
+      # For every metadata field in the item, find the corresponding label
+      fields.each do |field|
+        if @document.keys.include? field
+          value = @document[field][0]
+          label = all_upload_fields.detect { |uf| uf.field_name.to_s == field }.label
+          metadata.push({'label' => label, 'value' => value})
+        end
+      end
+      return metadata
     end
 
     # Makes canvases for subsequent images in a compound object. Returns an array of canvas objects.

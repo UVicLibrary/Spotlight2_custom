@@ -41,7 +41,7 @@
 </td>
 
 <td class="delete-button-cell">
-  <%= button_to exhibit_resource_path(current_exhibit, resource), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: "Are you sure? Once deleted, an item cannot be recovered." } do %>
+  <%= button_to exhibit_resource_path(current_exhibit, resource), class: "btn btn-sm btn-danger", method: :delete, data: { confirm: "Are you sure? A deleted item cannot be recovered." } do %>
     Delete
   <% end %>
 </td>
