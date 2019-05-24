@@ -32,7 +32,7 @@ module Spotlight
       fresh_when([@page.exhibit, @page])
       resources = @exhibit.resources
 
-            @resource = Spotlight::Resource.find(@document.id.split("-").last)
+      @resource = @document.uploaded_resource
 
     end
 
