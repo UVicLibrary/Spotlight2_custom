@@ -31,7 +31,7 @@ Imagine I am an ant living in the top most folder (files_for_spotlight). How wou
 
 ### Export the User Document as a CSV
 
-1. Go to **File > Save As > CSV (Comma delimited) (\*.csv)**
+1. Go to File > Save As > CSV (Comma delimited) (\*.csv).
 
 2. Attach the CSV to an email or upload it onto Q:Drive with the rest of your files.
 
