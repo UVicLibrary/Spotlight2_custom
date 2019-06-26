@@ -54,14 +54,14 @@ module Spotlight
     end
 
     def get_solr
-      items = []
+      # items = []
       solr = RSolr.connect :url => 'http://localhost:8983/solr/blacklight-core'
       solr.get 'select', :params => {
         :q => params[:q],
         :start => 0,
         :rows => 20,
         :fl => ["id", "full_title_tesim", "spotlight_upload_description_tesim", "thumbnail_url_ssm"],
-        :fq => ["spotlight_exhibit_slug_#{@exhibit.slug}_bsi:true"],
+        :fq => ["exhibit_#{@exhibit.slug}_public_bsi:true"],
         :wt => "ruby"
       }
     end

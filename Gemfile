@@ -28,6 +28,12 @@ gem 'annotot'
 # gem 'rubyzip'
 gem 'sortable-rails'
 gem 'nouislider-rails'
+gem 'combine_pdf'
+gem 'cloudconvert-ruby'
+#gem 'pdftoimage'
+gem 'thor'
+gem 'oily_png'
+gem 'pxlsrt'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'

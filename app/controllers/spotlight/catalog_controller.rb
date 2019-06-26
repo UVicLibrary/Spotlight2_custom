@@ -150,6 +150,7 @@ module Spotlight
         results = dimensions_to_i(canvas, resource)
         canvas = results[0]
         resource = results[1]
+        source_m.attribution = "This is a test"
         add_resource_properties(source_m)
         manifest = source_m.to_json(pretty:true)
       else # If compound object, render the saved file
@@ -193,7 +194,7 @@ module Spotlight
 
     def add_resource_properties(manifest)
       manifest.metadata = add_metadata
-      manifest.attribution = add_attribution
+      # manifest.attribution = add_attribution
       manifest.logo = add_logo
     end
 

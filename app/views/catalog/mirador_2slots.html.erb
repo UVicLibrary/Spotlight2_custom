@@ -1,0 +1,31 @@
+<div class="mirador">
+  <!-- Set variables for mirador viewer -->
+  <% manifestUri = "#{request.base_url}/spotlight/#{current_exhibit.slug}/catalog/#{document.id}/manifest.json" %>
+  <% if can? :manage, @page %>
+    <% can_annotate = true %>
+  <% else %>
+    <% can_annotate = false %>
+  <% end %>
+
+  <%= mirador_tag(
+      id: "viewer",
+      height: '100%',
+      width: '100%',
+      options: {
+        layout: "1x2",
+        data: [
+         {
+          manifestUri: "#{request.base_url}/spotlight/#{current_exhibit.slug}/catalog/#{document.id}/manifest.json", location: "My Repository"
+         }
+        ],
+        windowObjects: [{
+           loadedManifest: manifestUri,
+           viewType: "ImageView",
+           annotationLayer: true,
+           annotationCreation: true,
+           annotationState: 'annoOncreateOn'
+        }]
+      }
+    )
+   %>
+</div>

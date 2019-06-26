@@ -1,5 +1,4 @@
 var radioValue = $("input[name='toggleSelection']:checked").val();
-
 $('#results').html("<%= j (render partial: 'results.html') %>");
   // Allow search but disable add buttons
   if(radioValue == "use-range"){

@@ -81,6 +81,7 @@
 <script>
 
   $( document ).on('turbolinks:load', function() {
+
     // Validate item IDs
     $('.submit-compound-object').click(function(e) {
       errorMessage = '<span class="invalid-feedback">You did not define Item IDs for your compound object.</span>'
@@ -162,6 +163,14 @@
         density: 4
       }
   });
+
+  $('.noUi-handle').mouseup(function() {
+      $(this).css('z-index','inherit');
+    })
+    .mousedown(function() {
+      $(this).css('z-index','1');
+  });
+
 
   // Takes an array of integers and adds them to the Items ID form with quotes
   function updateRangeIds() {
