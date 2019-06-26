@@ -13,7 +13,7 @@ You can name the files anything you want, so long as they are completely unambig
 
 **Note:** Replace any spaces in your folder names with underscores ( \_ ) or hyphens ( - ) and include the extension in the filename.
 
-For example, assume I have a nested folder structure like this (`[]` means a folder and black_bear.jpg is the file):
+For example, assume I have a nested folder structure like this:
 
 ![example folder structure](file_folder_structure.png)
 
