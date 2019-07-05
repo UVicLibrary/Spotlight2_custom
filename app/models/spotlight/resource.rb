@@ -36,6 +36,8 @@ module Spotlight
             "audio"
           elsif mime_type.include?('image')
             "image"
+          elsif mime_type.include?('pdf')
+            "pdf"
           elsif ['.stl', '.obj', '.3ds'].any? { |ext| self.file_name.include?(ext) }
             "model"
           else

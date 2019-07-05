@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Spotlight
   # Creates solr documents for the documents in a resource
   class SolrDocumentBuilder
@@ -21,10 +23,6 @@ module Spotlight
       data.lazy.reject(&:blank?).each do |doc|
         yield doc.reverse_merge(exhibit_solr_doc(doc[unique_key]).to_solr)
       end
-    end
-
-    def see_solr
-      print(to_solr)
     end
 
     protected

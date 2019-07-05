@@ -47,10 +47,9 @@ module Spotlight
                   'name' => title,
                   'description' => description,
                   'isPublished' => "true",
-                  'modelFile'=> File.new('public/uploads/spotlight/featured_image/image/' + @resource.upload.id.to_s + '/'+ @resource.file_name.to_s, 'rb')
+                  'modelFile'=> File.new('public/uploads/spotlight/featured_image/image/' + @resource.upload.id.to_s + "/" + @resource.file_name.to_s, 'rb')
               }
-              # To Do: Replace with UVic account's API token
-              response = RestClient.post("https://api.sketchfab.com/v3/models", data, {:Authorization => 'Token 18e737793f7747c28b86d3c139d42789', accept: :json})
+              response = RestClient.post("https://api.sketchfab.com/v3/models", data, {:Authorization => "Token #{Rails.application.secrets[:sketchfab_api_key]}", accept: :json})
               # Save Sketchfab uid to column in resource
               @resource.uid = JSON.parse(response.body)["uid"]
               @resource.save

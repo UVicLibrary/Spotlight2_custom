@@ -2,7 +2,7 @@
 <% resource = Spotlight::Resource.find(document.id.split("-").last) %>
 <% file_type = resource.file_type if resource.file_type %>
 <td>
-  <% if file_type == "image" %>
+  <% if file_type == "image" or file_type == "pdf" %>
     <%= render_document_partial document, 'spotlight/catalog/admin_thumbnail', document_counter: document_counter %>
   <% elsif file_type == "compound object" %>
     <!-- Render the first image in compound_ids but link to the correct resource -->

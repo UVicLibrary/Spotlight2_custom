@@ -28,12 +28,17 @@ gem 'annotot'
 # gem 'rubyzip'
 gem 'sortable-rails'
 gem 'nouislider-rails'
-gem 'combine_pdf'
 gem 'cloudconvert-ruby'
-#gem 'pdftoimage'
 gem 'thor'
 gem 'oily_png'
 gem 'pxlsrt'
+
+# For pdf thumbnails
+gem 'combine_pdf'
+gem 'pdftoimage'
+gem 'poppler'
+gem 'fileutils'
+gem 'pdf-reader'
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
@@ -96,5 +101,6 @@ gem 'sitemap_generator'
 gem 'blacklight-gallery', '>= 0.3.0'
 gem 'blacklight-oembed', '>= 0.1.0'
 gem 'devise_invitable'
+gem 'csvlint'
 
 gem "mirador_rails", "~> 0.6.0"
