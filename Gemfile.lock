@@ -177,7 +177,7 @@ GEM
     combine_pdf (1.0.16)
       ruby-rc4 (>= 0.1.5)
     concurrent-ruby (1.1.5)
-    crass (1.0.4)
+    crass (1.0.6)
     csvlint (0.4.0)
       activesupport
       addressable
@@ -289,7 +289,7 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
     loggability (0.17.0)
-    loofah (2.2.3)
+    loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -321,7 +321,7 @@ GEM
     net-http-persistent (2.9.4)
     netrc (0.11.0)
     nio4r (2.4.0)
-    nokogiri (1.10.4)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     nouislider-rails (8.2.1)
       railties (>= 3.1)
