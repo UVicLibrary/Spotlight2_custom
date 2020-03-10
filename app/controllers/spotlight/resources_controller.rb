@@ -53,6 +53,8 @@ module Spotlight
       @resource = Spotlight::Resource.find(params[:id])
       @exhibit = @resource.exhibit
       delete_document
+      image_folder = Rails.root.join("public/uploads/spotlight/featured_image/image/#{@resource.upload_id}")
+      FileUtils.remove_dir(image_folder) if Dir.exist?(image_folder)
       @resource.destroy
       flash[:notice] = "Item was successfully deleted"
       redirect_to admin_exhibit_catalog_path(@exhibit)
