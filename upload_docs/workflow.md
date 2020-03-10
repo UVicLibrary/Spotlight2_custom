@@ -13,7 +13,7 @@ You can name the files anything you want, so long as they are completely unambig
 
 **Note:** Replace any spaces in your folder names with underscores ( \_ ) or hyphens ( - ) and include the extension in the filename.
 
-For example, assume I have a nested folder structure like this (`[]` means a folder and black_bear.jpg is the file):
+For example, assume I have a nested folder structure like this:
 
 ![example folder structure](file_folder_structure.png)
 
@@ -31,7 +31,7 @@ Imagine I am an ant living in the top most folder (files_for_spotlight). How wou
 
 ### Export the User Document as a CSV
 
-1. Go to **File > Save As > CSV (Comma delimited) (\*.csv)**
+1. Go to File > Save As > CSV (Comma delimited) (\*.csv).
 
 2. Attach the CSV to an email or upload it onto Q:Drive with the rest of your files.
 
