@@ -1,3 +1,5 @@
+require 'byebug'
+
 module Spotlight
   module Resources
     # transforms a IiifHarvester into solr documents
@@ -6,11 +8,14 @@ module Spotlight
         return to_enum(:to_solr) { 0 } unless block_given?
 
         base_doc = super
-        resource.iiif_manifests.each do |manifest|
-          manifest.with_exhibit(exhibit)
-          manifest_solr = manifest.to_solr
-          yield base_doc.merge(manifest_solr) if manifest_solr.present?
-        end
+
+          resource.iiif_manifests.each do |manifest|
+            manifest.with_exhibit(exhibit)
+            manifest.with_resource(resource)
+            manifest_solr = manifest.to_solr
+            yield base_doc.merge(manifest_solr) if manifest_solr.present?
+          end
+
       end
     end
   end

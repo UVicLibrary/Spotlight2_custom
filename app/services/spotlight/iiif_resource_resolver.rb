@@ -12,7 +12,6 @@ module Spotlight
     def resolve!
       resource.iiif_tilesource = updated_tilesource
       return resource.save if resource.changed?
-
       Rails.logger.info("#{self.class.name} resolved #{iiif_manifest_url}, but nothing changed.")
     end
 
@@ -53,7 +52,12 @@ module Spotlight
 
     def response
       @response ||= begin
-                      Faraday.get(iiif_manifest_url).body
+                      if iiif_manifest_url.include?("vault.library.uvic.ca") # Trust Vault
+                        conn = Faraday.new(iiif_manifest_url, { ssl: {verify:false}})
+                        conn.get.body
+                      else
+                        Faraday.get(iiif_manifest_url).body
+                      end
                     rescue Faraday::Error => e
                       Rails.logger.warn("#{self.class.name} failed to fetch #{iiif_manifest_url} with: #{e}")
                       '{}'

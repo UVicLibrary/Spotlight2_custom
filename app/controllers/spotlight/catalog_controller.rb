@@ -11,6 +11,7 @@ module Spotlight
     include Spotlight::Catalog
     include Spotlight::Concerns::CatalogSearchContext
 
+
     before_action :authenticate_user!, only: [:admin, :edit, :make_public, :make_private]
     before_action :check_authorization, only: [:admin, :edit, :make_public, :make_private]
     before_action :redirect_to_exhibit_home_without_search_params!, only: :index
@@ -37,10 +38,13 @@ module Spotlight
 
 
     before_action only: :edit do
-      blacklight_config.view.edit.partials = blacklight_config.view_config(:show).partials.dup
+      blacklight_config.view.edit.partials = (blacklight_config.view_config(:show).partials.dup - [:show])
       blacklight_config.view.edit.partials.insert(2, :edit)
+    end
 
-      @resource = ::SolrDocument.find(params[:id]).uploaded_resource
+    # Covers both uploaded and imported resources
+    before_action only: [:show, :edit, :update, :mirador_fullscreen] do
+      @resource = Spotlight::Resource.find(params[:id].split("-").last.to_i)
     end
 
     before_action only: [:video, :manifest] do
@@ -62,7 +66,6 @@ module Spotlight
 
       add_document_breadcrumbs(@document)
 
-      @resource = @document.uploaded_resource
     end
 
     # "id_ng" and "full_title_ng" should be defined in the Solr core's schema.xml.
@@ -93,9 +96,24 @@ module Spotlight
 
     def update
       @response, @document = fetch params[:id]
+
+      if params[:solr_document][:uploaded_resource]
+          new_file_name = params[:solr_document][:uploaded_resource][:url].original_filename
+          @resource.file_name = new_file_name if new_file_name.present?
+          @resource.save_and_index
+          Riiif::Image.file_resolver = Spotlight::CarrierwaveFileResolver.new
+          @resource.reindex
+
+          riiif_images_controller = Riiif::ImagesController.new
+          riiif_images_controller.request = request
+          riiif_images_controller.response = response
+          riiif_images_controller.update_info(@resource.upload_id)
+      else
+        @resource.save
+        @resource.reindex
+      end
       @document.update(current_exhibit, solr_document_params)
       @document.save
-
       try_solr_commit!
 
       redirect_to polymorphic_path([current_exhibit, @document])
@@ -133,60 +151,69 @@ module Spotlight
 
     end
 
+
+
     # Render a manifest as a raw json file
     # Order of operations: Spotlight's pre-generated manifest -> modified manifest (catalog#manifest)
-    # -> manifest_fullscreen -> Mirador partial (renders modified manifest).
-    # Catalog#show calls openseadragon_default view, which has an iframe to manifest_fullscreen.
+    # -> mirador_fullscreen -> Mirador partial (renders modified manifest).
+    # Catalog#show calls openseadragon_default view, which has an iframe to mirador_fullscreen.
     # See http://projectmirador.org/docs/docs/getting-started.html#iframe
     def manifest
       _, @document = fetch params[:id]
-      @resource = @document.uploaded_resource
-
-      if @resource.file_type == "image"
+      if @document.uploaded_resource?
+          @resource = @document.uploaded_resource
+          if @resource.file_type == "image"
+            source_m = Spotlight::IiifManifestPresenter.new(@document, self).iiif_manifest_json
+            source_m = IIIF::Service.parse(JSON.parse(source_m))
+            canvas = source_m.sequences.first.canvases.first
+            resource = canvas.images.first.resource
+            results = dimensions_to_i(canvas, resource)
+            canvas = results[0]
+            resource = results[1]
+            #resource.service["@id"] = "#{resource.service['@id']}?1234567"
+            add_resource_properties(source_m)
+            manifest = source_m.to_json(pretty:true)
+          else # If compound object, render the saved file
+            doc_ids = @resource.compound_ids
+            @first_resource = ::SolrDocument.find(doc_ids.first).uploaded_resource
+            # Grab title from the first item in the compound object
+            first_resource_title = @first_resource.data["full_title_tesim"]
+            if @resource.data["full_title_tesim"].blank?
+              resource_title = first_resource_title
+            else
+              resource_title = @resource.data["full_title_tesim"]
+            end
+            # See https://iiif.io/api/presentation/2.1/#attribution
+            seed = {
+                '@id' => "#{request.base_url}/spotlight/test-exhibit/manifest",
+                'label' => resource_title
+            }
+            manifest = IIIF::Presentation::Manifest.new(seed)
+            add_resource_properties(manifest)
+            # Create sequence headers
+            sequence = IIIF::Presentation::Sequence.new(
+              '@id'=> "#{request.base_url}/spotlight/test-exhibit/catalog/manifest",
+              '@type' => 'sc:Sequence'
+              )
+            # Make canvases and add them to the sequence
+            sequence.canvases = make_canvases(doc_ids)
+            manifest.sequences << sequence
+            manifest = manifest.to_json(pretty: true)
+          end
+      else # Resource is imported
         source_m = Spotlight::IiifManifestPresenter.new(@document, self).iiif_manifest_json
-        source_m = IIIF::Service.parse(JSON.parse(source_m))
-        canvas = source_m.sequences.first.canvases.first
-        resource = canvas.images.first.resource
-        results = dimensions_to_i(canvas, resource)
-        canvas = results[0]
-        resource = results[1]
-        source_m.attribution = "This is a test"
-        add_resource_properties(source_m)
-        manifest = source_m.to_json(pretty:true)
-      else # If compound object, render the saved file
-        doc_ids = @resource.compound_ids
-        @first_resource = ::SolrDocument.find(doc_ids.first).uploaded_resource
-        # Grab title from the first item in the compound object
-        first_resource_title = @first_resource.data["full_title_tesim"]
-        if @resource.data["full_title_tesim"].blank?
-          resource_title = first_resource_title
-        else
-          resource_title = @resource.data["full_title_tesim"]
-        end
-        # See https://iiif.io/api/presentation/2.1/#attribution
-        seed = {
-            '@id' => "#{request.base_url}/spotlight/test-exhibit/manifest",
-            'label' => resource_title
-        }
-        manifest = IIIF::Presentation::Manifest.new(seed)
+        manifest = IIIF::Service.parse(JSON.parse(source_m))
+        #byebug
+        # Add attribution and logo
         add_resource_properties(manifest)
-        # Create sequence headers
-        sequence = IIIF::Presentation::Sequence.new(
-          '@id'=> "#{request.base_url}/spotlight/test-exhibit/catalog/manifest",
-          '@type' => 'sc:Sequence'
-          )
-        # Make canvases and add them to the sequence
-        sequence.canvases = make_canvases(doc_ids)
-        manifest.sequences << sequence
         manifest = manifest.to_json(pretty: true)
       end
-      render json: manifest
+        render json: manifest
     end
 
-    # Uses manifest (generated by catalog#manfest) & renders fullscreen Mirador viewer for image or compound object
+    # Renders fullscreen Mirador viewer for image or compound object, which is used for iframes
     def mirador_fullscreen
       _, @document = fetch params[:id]
-      @resource = @document.uploaded_resource
       respond_to do |format|
         format.html {render layout: false } # Don't render masthead or other stuff
       end
@@ -194,7 +221,7 @@ module Spotlight
 
     def add_resource_properties(manifest)
       manifest.metadata = add_metadata
-      # manifest.attribution = add_attribution
+      manifest.attribution = add_attribution
       manifest.logo = add_logo
     end
 
@@ -215,27 +242,27 @@ module Spotlight
     end
 
     def add_logo
-      "#{request.base_url}#{ActionController::Base.helpers.asset_path("libr_logo_comb.jpg")}"
+      "#{request.base_url}#{ActionController::Base.helpers.image_url("libr_logo_comb.jpg")}"
     end
 
     def add_metadata
       exhibit_slug = current_exhibit.slug
-      # Get rid of labels that aren't metadata fields
-      fields = []
-      uploaded_resource_params[0][:configured_fields].each { |f| fields.push(f.to_s) }
+      if @document.uploaded_resource?
+        fields = uploaded_resource_params[0][:configured_fields].map(&:to_s)
+      else
+        fields = @document.sidecar(current_exhibit).data['configured_fields'].keys
+      end
       # Omit the rights field in metadata since it is already in the attribution field of the manifest
-      fields - ['spotlight_upload_Rights_tesim'] if fields.include? 'spotlight_upload_Rights_tesim'
-      metadata = []
+      fields.reject! { |f| f == 'spotlight_upload_Rights_tesim' }
       all_upload_fields = Spotlight::Resources::Upload.fields(current_exhibit)
       # For every metadata field in the item, find the corresponding label
-      fields.each do |field|
+      fields.each_with_object([]) do |field, metadata|
         if @document.keys.include? field
           value = @document[field][0]
           label = all_upload_fields.detect { |uf| uf.field_name.to_s == field }.label
           metadata.push({'label' => label, 'value' => value})
         end
       end
-      return metadata
     end
 
     # Makes canvases for subsequent images in a compound object. Returns an array of canvas objects.
@@ -332,11 +359,7 @@ module Spotlight
     end
 
     def uploaded_resource_params
-      if @document.uploaded_resource?
         [{ configured_fields: Spotlight::Resources::Upload.fields(current_exhibit).map(&:field_name) }]
-      else
-        []
-      end
     end
 
     def custom_field_params
@@ -386,3 +409,14 @@ module Spotlight
     end
   end
 end
+
+private
+
+  def redirect_to_info_path
+    riiif = Riiif::Engine.routes.url_helpers
+    redirect_to riiif.info_path(@resource.upload_id)
+  end
+
+  def redirect_to_catalog_show
+    redirect_to polymorphic_path([current_exhibit, @document]) and return
+  end

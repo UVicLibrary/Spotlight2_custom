@@ -22,8 +22,12 @@ module Spotlight
     after_index :commit
     after_index :touch_exhibit!
 
+    def imported?
+      self.class == Spotlight::Resources::IiifHarvester
+    end
+
     def file_type
-      if self.compound_ids?
+      if self.compound_ids? or self.imported_compound_object?
         "compound object"
       elsif self.file_name?
         mime_type = Rack::Mime.mime_type(File.extname(self.file_name))
@@ -43,6 +47,13 @@ module Spotlight
           else
             "unknown"
           end
+      end
+    end
+
+    def imported_compound_object?
+      if self.class == Spotlight::Resources::IiifHarvester
+        document = ::SolrDocument.find("#{exhibit.id}-#{self.id}")
+        document['content_metadata_image_iiif_info_ssm'].length > 1
       end
     end
 

@@ -1,6 +1,10 @@
 <% require 'rest_client' %>
 <% require 'json' %>
-<% resource = Spotlight::Resource.find(document.id.split("-").last) %>
+<% if document.uploaded_resource? %>
+  <% resource = document.uploaded_resource %>
+<% else %>
+  <% resource = Spotlight::Resource.find(document['spotlight_resource_id_ssim'].first.split("/").last.to_i) %>
+<% end %>
 <div class="document-thumbnail spotlight-admin-thumbnail">
   <%= link_to exhibit_solr_document_path(current_exhibit, document) do %>
     <% if resource.file_type == "video" %>

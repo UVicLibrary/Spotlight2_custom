@@ -36,7 +36,7 @@
 # Spotlight::Engine.config.thumbnail_field = :thumbnail_url_ssm
 
 # ==> Uploaded item configuration
-# Spotlight::Engine.config.upload_fields = [
+Spotlight::Engine.config.upload_fields = [
 #   UploadFieldConfig.new(
 #     field_name: config.upload_description_field,
 #     label: -> { I18n.t(:"spotlight.search.fields.#{config.upload_description_field}") },
@@ -50,7 +50,201 @@
 #     field_name: :spotlight_upload_date_tesim,
 #     label: -> { I18n.t(:'spotlight.search.fields.spotlight_upload_date_tesim') }
 #   )
-# ]
+Spotlight::UploadFieldConfig.new(
+  field_name: "spotlight_upload_dc_description_tesim",
+  label: 'Description',
+  form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+  field_name: "spotlight_upload_Contributors_tesim",
+  label: 'Contributors'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Subject_tesim",
+    label: 'Abstract',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Subjects_tesim",
+    label: 'Subjects',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Subjects_ftesim",
+    label: 'Subjects Facet',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Creator_tesim",
+    label: 'Creator'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Publisher_tesim",
+    label: 'Publisher'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Contributors_tesim",
+    label: 'Contributors'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Date_tesi", #tesim to tesi
+    label: 'Date',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Date-Created_Searchable_ftesi", # ftesim to ftesi
+    label: 'Date searchable',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Date-Created_Searchable_tesi", # ftesim to ftesi
+    label: 'Date searchable',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Type_Genre_tesim",
+    label: 'Genre',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Type_Genre_ftesim",
+    label: 'Genre Facet',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Format_tesim",
+    label: 'Format'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Identifier_tesim",
+    label: 'Identifier'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Source_tesim",
+    label: 'Source'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Language_tesim",
+    label: 'Language'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Language_ftesim",
+    label: 'Language Facet'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Relation_tesim",
+    label: 'Relation'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Coverage_tesim",
+    label: 'Coverage'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Rights_tesim",
+    label: 'Rights'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Provenance_tesim",
+    label: 'Provenance'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Title_Alternative_tesim",
+    label: 'Title-Alternative',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Description-Table-Of-Contents_tesim",
+    label: 'Description-Table Of Contents'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Description-Abstract_tesim",
+    label: 'Description-Abstract'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Format-Extent_tesim",
+    label: 'Format-Extent'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Format-Medium_tesim",
+    label: 'Format-Medium'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Identifier-Bibliographic-Citation_tesim",
+    label: 'Identifier-Bibliographic Citation'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Relation_IsPartOf_Collection_tesim",
+    label: 'Collection',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Relation_IsPartOf_Collection_ftesim",
+    label: 'Collection Facet',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Coverage-Spatial_Location_tesim",
+    label: 'Location(s)',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Coverage-Spatial_Location_ftesim",
+    label: 'Location(s) Facet',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Coverage-Temporal_tesim",
+    label: 'Coverage-Temporal'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Date-Digitized_tesi", #tesim to tesi
+    label: 'Date Digitized'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Description_Transcript_tesim",
+    label: 'Transcript',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Subject_People_tesim",
+    label: 'People Depicted',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_Subject_People_ftesim",
+    label: 'People Facet',
+    form_field_type: :text_area),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Sketchfab-uid_tesim",
+    label: 'Sketchfab Uid'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_x_dbsm,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_y_dbsm,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_width_dbsm,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_height_dbsm,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_title_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_author_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_description_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_date_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_publisher_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_annotation_publisher-place_tesim",
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_annotation_publisher-date_tesim",
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_people_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_locations_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_transcript_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_genre_tesim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: :spotlight_annotation_public_isim,
+    label: 'Hidden'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_parent_tesim",
+    label: 'Parent'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_Commentary_tesim",
+    label: 'Commentary'), #'User Defined 1'
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_UserDefined_tesim",
+    label: 'User Defined 2'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "sortDate",
+    label: 'sortDate'),
+Spotlight::UploadFieldConfig.new(
+    field_name: "spotlight_upload_dc_box_tesim",
+    label: 'Geographic Coordinates')
+]
 # Spotlight::Engine.config.upload_title_field = nil # UploadFieldConfig.new(...)
 # Spotlight::Engine.config.uploader_storage = :file
 Spotlight::Engine.config.allowed_upload_extensions = %w(jpg jpeg png pdf mp4)

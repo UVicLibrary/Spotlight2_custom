@@ -35,8 +35,9 @@ module Spotlight
           # If we don't explicitly create a featured image, Solr won't index the file
           placeholder = Spotlight::FeaturedImage.create
         end
+
         # Line calling FeaturedImageUploader
-        @resource.build_upload(image: params[:resources_upload][:url])
+        @resource.build_upload(image: params[:resources_upload][:url]) if params[:resources_upload][:url]
 
         if @resource.save_and_index
             # Upload to Sketchfab

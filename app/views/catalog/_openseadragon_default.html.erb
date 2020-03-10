@@ -1,6 +1,9 @@
 <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.3.1.js"></script>
-
-<% @resource = Spotlight::Resource.find(document.id.split("-").last) %>
+<% if document.uploaded_resource? %>
+    <% @resource = document.uploaded_resource %>
+  <% else %>
+    <% @resource = Spotlight::Resource.find(@document['spotlight_resource_id_ssim'].first.split("/").last.to_i) %>
+  <% end %>
 <% if @resource.file_type == "image" or @resource.file_type == "compound object" %>
   <!-- If an image, use Mirador -->
   <!-- need iframes to embed more than one viewer (e.g. if on a feature page). See manifest_fullscreen, application.css -->
@@ -37,7 +40,10 @@
       on <a href="https://sketchfab.com?utm_medium=embed&utm_source=website&utm_campaign=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
     </p>
   </div> <!-- sketchfab-embed-wrapper -->
-
+  <% elsif @resource.file_type == "pdf" %>
+  <div>
+    <iframe style="width: 100%; min-height: 500px;" src="/uploads/spotlight/featured_image/image/<%=@resource.upload.id%>/<%=@resource.file_name%>"></iframe>
+  </div>
   <!-- For both video and audio -->
   <% else %>
   <video class="pull-left" width="auto" height="auto" controls>

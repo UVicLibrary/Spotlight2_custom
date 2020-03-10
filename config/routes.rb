@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   get "/spotlight/:exhibit_id/new_manifest", to: "spotlight/resources#new_manifest", as: :new_manifest
   get "/spotlight/:exhibit_id/map", to: "spotlight/resources#google_map", as: :map
   get "/spotlight/:exhibit_id/catalog/:id/mirador_fullscreen", to: "spotlight/catalog#mirador_fullscreen", as: :manifest_fullscreen
+  get "/spotlight/:exhibit_id/catalog/:id/update_riiif_info_path", to: "spotlight/catalog#update_riiif_info_path", as: :update_riiif_info_path
 
 end
 

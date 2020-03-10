@@ -1,8 +1,14 @@
 <%# header bar for doc items in index view -%>
-<% resource = Spotlight::Resource.find(document.id.split("-").last) %>
+<% if document.uploaded_resource? %>
+  <% resource = document.uploaded_resource %>
+<% else %>
+  <% resource = Spotlight::Resource.find(document.id.split("-").last) %>
+  <%# resource = Spotlight::Resource.find(document['spotlight_resource_id_ssim'].first.split("/").last.to_i) %>
+<% end %>
 <% file_type = resource.file_type if resource.file_type %>
+
 <td>
-  <% if file_type == "image" or file_type == "pdf" %>
+  <% if file_type == "image" or file_type == "pdf" or resource.imported_compound_object? %>
     <%= render_document_partial document, 'spotlight/catalog/admin_thumbnail', document_counter: document_counter %>
   <% elsif file_type == "compound object" %>
     <!-- Render the first image in compound_ids but link to the correct resource -->

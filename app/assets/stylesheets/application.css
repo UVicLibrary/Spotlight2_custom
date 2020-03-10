@@ -16,6 +16,20 @@
  *= require_tree .
  */
 
+.vault-url-icon {
+  top: 2em !important;
+  left: 8.75em !important;
+  color: #3d96e3 !important;
+  border-bottom: 1.5px dotted;
+  position: relative;
+  z-index: 100;
+}
+
+
+.capitalize {
+  text-transform: capitalize;
+}
+
  td.delete-button-cell {
    text-align: center;
  }

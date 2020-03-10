@@ -41,7 +41,6 @@ module Spotlight
     end
 
     def add_image_dimensions(solr_hash)
-      # To Do: if resource is video, use video thumbnail
       if resource.file_type == "image"
         dimensions = Riiif::Image.new(resource.upload_id).info
       else # is compound object

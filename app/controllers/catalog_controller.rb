@@ -28,6 +28,22 @@ class CatalogController < ApplicationController
     config.document_solr_path = 'get'
     config.document_unique_id_param = 'ids'
 
+    # Configure facet fields
+    #config.add_facet_field 'spotlight_upload_dc_Subjects_ftesim', label: "Subject(s)", limit: true
+    #config.add_facet_field 'spotlight_upload_dc_Date-Created_Searchable_ftesi', label: 'Date', limit: true
+    #config.add_facet_field 'spotlight_upload_dc_Type_Genre_ftesim', label: 'Genre', limit: true
+    #config.add_facet_field 'spotlight_upload_Language_ftesim', label: 'Language', limit: true
+    #config.add_facet_field "spotlight_upload_dc_Coverage-Spatial_Location_ftesim", label: 'Location(s)', limit: true
+    #config.add_facet_field "spotlight_upload_dc_Subject_People_ftesim", label: 'People', limit: true
+    #config.add_facet_field "spotlight_upload_dc_Relation_IsPartOf_Collection_ftesim", label: 'Collection', limit: true
+    #config.add_facet_field "spotlight_upload_Format_tesim", label: 'Format', limit: true
+
+          config.add_facet_field "full_title_tesim", label: 'Title'
+
+          config.add_facet_field "spotlight_upload_attribution_tesim", label: 'Attribution'
+
+    config.add_field_configuration_to_solr_request!
+    config.add_facet_fields_to_solr_request!
 
     config.add_search_field 'all_fields', label: I18n.t('spotlight.search.fields.search.all_fields')
 

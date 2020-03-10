@@ -24,7 +24,19 @@ module Spotlight
     end
 
     def create
+      #byebug
+      if @resource.url.present?
+        manifest = @resource.iiif_manifests.first # See /models/spotlight/resources/vault_iiif_manifest.rb
+        manifest.with_exhibit(@resource.exhibit)
+        manifest.with_resource(@resource)
+        @resource.data = manifest.manifest_metadata.transform_values { |v| v.first } # We want to index the SolrDocument with a multiple value ({ k => ['v'] }
+        # but Resource.data should index the string value, data: { k => 'v' }
+        @resource.file_name = "default.jpg" # needed for calculating resource.file_type
+      end
       if @resource.save_and_index
+        if @resource.imported?
+          flash[:notice] = "Your item is being imported from Vault. Please check back later or refresh the page."
+        end
         redirect_to spotlight.admin_exhibit_catalog_path(@resource.exhibit, sort: :timestamp)
       else
         flash[:error] = @resource.errors.full_messages.to_sentence if @resource.errors.present?
