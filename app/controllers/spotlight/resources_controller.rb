@@ -14,6 +14,10 @@ module Spotlight
 
     helper_method :resource_class
 
+    def admin_exhibit_catalog_path(exhibit)
+      # code here
+    end
+
     def new
       add_breadcrumb t(:'spotlight.exhibits.breadcrumb', title: @exhibit.title), exhibit_root_path(@exhibit)
       add_breadcrumb t(:'spotlight.curation.sidebar.header'), exhibit_dashboard_path(@exhibit)
@@ -29,7 +33,7 @@ module Spotlight
         manifest = @resource.iiif_manifests.first # See /models/spotlight/resources/vault_iiif_manifest.rb
         manifest.with_exhibit(@resource.exhibit)
         manifest.with_resource(@resource)
-        @resource.data = manifest.manifest_metadata.transform_values { |v| v.first } # We want to index the SolrDocument with a multiple value ({ k => ['v'] }
+        @resource.data = manifest.manifest_metadata.transform_values { |v| v.first unless v.nil? } # We want to index the SolrDocument with a multiple value ({ k => ['v'] }
         # but Resource.data should index the string value, data: { k => 'v' }
         @resource.file_name = "default.jpg" # needed for calculating resource.file_type
       end
@@ -53,8 +57,10 @@ module Spotlight
       @resource = Spotlight::Resource.find(params[:id])
       @exhibit = @resource.exhibit
       delete_document
-      image_folder = Rails.root.join("public/uploads/spotlight/featured_image/image/#{@resource.upload_id}")
-      FileUtils.remove_dir(image_folder) if Dir.exist?(image_folder)
+      #if @resource.type == "Spotlight::Resources::Upload" and @resource.upload_id?
+      #  image_folder = Rails.root.join("public/uploads/spotlight/featured_image/image/#{@resource.upload_id}")
+      #  FileUtils.remove_dir(image_folder) if Dir.exist?(image_folder)
+      #end
       @resource.destroy
       flash[:notice] = "Item was successfully deleted"
       redirect_to admin_exhibit_catalog_path(@exhibit)

@@ -18,20 +18,22 @@ module Spotlight
 
       def manifest_metadata
         metadata = metadata_class.new(manifest).to_solr # Returns a hash with metadata that gets sent to solr { k => ['val'] }
+        byebug
         return {} unless metadata.present?
         if @resource.data.blank? # Checks if resource was imported via CSV or URL. If from CSV, resource will already have something in the data field
             configured_fields = Spotlight::Resources::Upload.fields(exhibit)
             # Add rights_statement => Rights; and provider => Contributor since they are mandatory in Vault
-            metadata_hash = { "spotlight_upload_Rights_tesim" => (metadata["Rights statement"]), "spotlight_upload_Contributors_tesim" => (metadata["Provider"]) }
+            metadata_hash = { "spotlight_upload_Rights_tesim" => (metadata["Rights statement"])} #"spotlight_upload_Contributors_tesim" => (metadata["Provider"]) }
             labels = configured_fields.map(&:label)
             matching_labels = metadata.keys & labels
             if matching_labels.present?
               # If there is something in Vault's contributor field, append it to Spotlight's contributor field
-               if matching_labels.include?("Contributor")
-                 matching_labels.delete("Contributor")
-                 metadata_hash["spotlight_upload_Contributors_tesim"] = ["#{metadata['Provider'].first + '; ' + metadata['Contributor']}"]
-               end
+              # if matching_labels.include?("Contributor")
+              #   matching_labels.delete("Contributor")
+              #   metadata_hash["spotlight_upload_Contributors_tesim"] = ["#{metadata['Provider'].first + '; ' + metadata['Contributor']}"]
+              # end
               # Match spotlight metadata fields to Vault fields using their labels as a matchpoint.
+              # Title and description:
               matching_labels.each_with_object(metadata_hash) do |label, hash|
                 matching_field = configured_fields.find { |f| f.label == label }
                 hash[matching_field.field_name] = metadata[label]
@@ -68,7 +70,7 @@ module Spotlight
         if @resource.data.present?
           sidecar.update(data: {"configured_fields" => @resource.data})
         else
-          sidecar.update(data: {"configured_fields" => sidecar.data.merge(manifest_metadata.transform_values { |v| v.first }) })
+          sidecar.update(data: {"configured_fields" => sidecar.data.merge(manifest_metadata.transform_values { |v| v.first unless v.nil? }) })
         end
       end
 

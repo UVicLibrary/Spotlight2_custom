@@ -50,6 +50,15 @@ module Spotlight
       end
     end
 
+    # Returns file_type of a compound object's parts (image, video, audio)
+    def made_of
+      if self.file_type == "compound object"
+        ::SolrDocument.find(self.compound_ids[0]).uploaded_resource.file_type if ::SolrDocument.find(self.compound_ids[0]).uploaded_resource?
+      else
+        nil
+      end
+    end
+
     def imported_compound_object?
       if self.class == Spotlight::Resources::IiifHarvester
         document = ::SolrDocument.find("#{exhibit.id}-#{self.id}")
